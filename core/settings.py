@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main.apps.MainConfig'
+    'rest_framework',
+    'django_mysql',
+    'main.apps.MainConfig',
 ]
 
 MIDDLEWARE = [
@@ -81,6 +83,15 @@ DATABASES = {
         'PASSWORD': '',
         'HOST': 'db',
         'PORT': '3306',
+        "OPTIONS": {
+            # Tell MySQLdb to connect with 'utf8mb4' character set
+            "charset": "utf8mb4",
+        },
+        # Tell Django to build the test database with the 'utf8mb4' character set
+        "TEST": {
+            "CHARSET": "utf8mb4",
+            "COLLATION": "utf8mb4_unicode_ci",
+        },
     }
 }
 
