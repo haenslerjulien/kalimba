@@ -5,5 +5,5 @@ from rest_framework.decorators import api_view
 
 @api_view(['GET'])
 def getData(request):
-    person = {'name':'Julien', 'age':25}
+    person = {'name':'Julien', 'age':24}
     return Response(person)
