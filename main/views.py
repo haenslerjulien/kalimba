@@ -1,13 +1,16 @@
 from rest_framework.response import Response
+from django.http import FileResponse
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework import status, authentication, generics, permissions
 from rest_framework.views import APIView
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.parsers import FileUploadParser
 from .models import Sample
 from .serializers import SampleSerializer
 from core.authentication import TokenAuthentication
 
 class SampleAPIView(APIView):
+    parser_classes = (FileUploadParser,)
     @api_view(['GET', 'POST'])
     @permission_classes([permissions.IsAuthenticated])
     @authentication_classes([authentication.SessionAuthentication, TokenAuthentication])
@@ -18,15 +21,16 @@ class SampleAPIView(APIView):
             return Response(serializer.data)
         
         if request.method == 'POST':
-            sample = SampleSerializer(data=request.data, context={"request":request})
-            if sample.is_valid():
-                sample.save()
-                return Response(sample.data, status=status.HTTP_201_CREATED)
-            
+            serializer = SampleSerializer(data=request.data, context={"request":request})
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors)
     @api_view(['GET', 'DELETE'])
     @permission_classes([permissions.IsAuthenticated])
     @authentication_classes([authentication.SessionAuthentication, TokenAuthentication])
-    def sample_details(request, id, format=None):
+    def sample_handler(request, id, format=None):
         if request.method == 'GET':
             try:
                 sample = Sample.objects.get(pk=id)
@@ -34,8 +38,7 @@ class SampleAPIView(APIView):
                 return Response(status=status.HTTP_404_NOT_FOUND)
             
             if request.method == 'GET':
-                serializer = SampleSerializer(sample)
-                return Response(serializer.data)
+                return FileResponse(sample.file.open())
             
         elif request.method == 'DELETE':
             try:

@@ -7,6 +7,7 @@ class SampleSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'text',
+            'file',
             'user',
             'created_at',
         ]
@@ -15,7 +16,7 @@ class SampleSerializer(serializers.ModelSerializer):
     def save(self):
         request = self.context.get("request")
 
-        sample = Sample(text=self.validated_data['text'], user=request.user)
+        sample = Sample(text=self.validated_data['text'], user=request.user, file=self.validated_data['file'])
         sample.save()
     
         return sample
