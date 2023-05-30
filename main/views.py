@@ -2,6 +2,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework import status, authentication, generics, permissions
 from rest_framework.views import APIView
+from rest_framework.exceptions import PermissionDenied
 from .models import Sample
 from .serializers import SampleSerializer
 from core.authentication import TokenAuthentication
@@ -22,7 +23,7 @@ class SampleAPIView(APIView):
                 sample.save()
                 return Response(sample.data, status=status.HTTP_201_CREATED)
             
-    @api_view(['GET'])
+    @api_view(['GET', 'DELETE'])
     @permission_classes([permissions.IsAuthenticated])
     @authentication_classes([authentication.SessionAuthentication, TokenAuthentication])
     def sample_details(request, id, format=None):
@@ -35,4 +36,17 @@ class SampleAPIView(APIView):
             if request.method == 'GET':
                 serializer = SampleSerializer(sample)
                 return Response(serializer.data)
+            
+        elif request.method == 'DELETE':
+            try:
+                sample = Sample.objects.get(pk=id)
+            except Sample.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            
+            if request.user.id != sample.user.id and not request.user.is_superuser:
+                raise PermissionDenied('Trying to delete other people\'s samples ? Not cool')
+                
+            sample.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        
         
