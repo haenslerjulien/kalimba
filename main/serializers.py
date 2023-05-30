@@ -11,3 +11,11 @@ class SampleSerializer(serializers.ModelSerializer):
             'created_at',
         ]
         read_only_fields = ['id']
+
+    def save(self):
+        request = self.context.get("request")
+
+        sample = Sample(text=self.validated_data['text'], user=request.user)
+        sample.save()
+    
+        return sample

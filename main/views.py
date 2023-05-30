@@ -17,7 +17,7 @@ class SampleAPIView(APIView):
             return Response(serializer.data)
         
         if request.method == 'POST':
-            sample = SampleSerializer(data=request.data)
+            sample = SampleSerializer(data=request.data, context={"request":request})
             if sample.is_valid():
                 sample.save()
                 return Response(sample.data, status=status.HTTP_201_CREATED)

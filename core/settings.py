@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_mysql',
     'main.apps.MainConfig',
+    'register.apps.RegisterConfig'
 ]
 
 MIDDLEWARE = [
@@ -79,7 +80,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django-app-db',
+        'NAME': 'django_db',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'db',
