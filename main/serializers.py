@@ -1,7 +1,24 @@
 from rest_framework import serializers
-from .models import Sample
+from .models import Sample, Guess, Comment
 
+class GuessSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Guess
+        fields = [
+            'id',
+            'text',
+            'sample',
+            'user',
+            'approved',
+            'upvotes',
+            'downvotes',
+            'created_at',
+        ]
+        read_only_fields = ['id']
+    
 class SampleSerializer(serializers.ModelSerializer):
+    guesses = GuessSerializer(many=True, required=False)
+
     class Meta:
         model = Sample
         fields = [
@@ -10,13 +27,6 @@ class SampleSerializer(serializers.ModelSerializer):
             'file',
             'user',
             'created_at',
+            'guesses',
         ]
         read_only_fields = ['id']
-
-    def save(self):
-        request = self.context.get("request")
-
-        sample = Sample(text=self.validated_data['text'], user=request.user, file=self.validated_data['file'])
-        sample.save()
-    
-        return sample

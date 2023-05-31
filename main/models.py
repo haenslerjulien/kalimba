@@ -24,8 +24,11 @@ class Sample(models.Model):
 # A guess is the response from a user to a sample. It can be approved, commented, upvoted
 class Guess(models.Model):
     text = SizedTextField(size_class=1, null=True, blank=True) #255 Max
-    sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
+    sample = models.ForeignKey(Sample, on_delete=models.CASCADE, related_name="guesses")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="guesses", null=True)
+    upvotes = models.IntegerField(default=0)
+    downvotes = models.IntegerField(default=0)
+    approved = models.BooleanField(default=False) # Has the guess been confirmed by the sample's author
     created_at = models.DateTimeField(auto_now_add=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
 
