@@ -8,6 +8,8 @@ urlpatterns = [
     path('samples/<int:id>', views.SampleAPIView.sample_handler),
     path('guesses/', views.GuessAPIView.create_guess),
     path('guesses/<int:id>', views.GuessAPIView.guess_handler),
+    path('comments/', views.CommentApiView.create_comment),
+    path('comments/<int:id>', views.CommentApiView.comment_handler),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

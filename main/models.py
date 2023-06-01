@@ -36,7 +36,7 @@ class Guess(models.Model):
 # A comment is an answer to a guess
 class Comment(models.Model):
     text = SizedTextField(size_class=1, null=True, blank=True) #255 Max
-    guess = models.ForeignKey(Guess, on_delete=models.CASCADE)
+    guess = models.ForeignKey(Guess, on_delete=models.CASCADE, related_name="comments")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments", null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     deleted_at = models.DateTimeField(null=True, blank=True)

@@ -1,7 +1,37 @@
 from rest_framework import serializers
 from .models import Sample, Guess, Comment
 
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = [
+            'text',
+            'user',
+            'guess',
+            'created_at',
+        ]
+        read_only_fields = ['id']
+        extra_kwargs = {
+            'guess': {'write_only': True},
+        }
+
+class UpdateCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = [
+            'text',
+            'user',
+            'guess',
+            'created_at',
+        ]
+        read_only_fields = ['id']
+        extra_kwargs = {
+            'guess': {'write_only': True, "required": False, "allow_null": True},
+        }
+
 class GuessSerializer(serializers.ModelSerializer):
+    comments = CommentSerializer(many=True, required=False)
+
     class Meta:
         model = Guess
         fields = [
@@ -12,6 +42,7 @@ class GuessSerializer(serializers.ModelSerializer):
             'approved',
             'upvotes',
             'downvotes',
+            'comments',
             'created_at',
         ]
         read_only_fields = ['id']
