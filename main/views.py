@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import FileUploadParser
 from .models import Sample, Guess, Comment
-from .serializers import SampleSerializer, GuessSerializer
+from .serializers import SampleSerializer, GuessSerializer, UpdateGuessSerializer
 from core.authentication import TokenAuthentication
 
 # # # # # # # # # # # # # # # # #
@@ -100,7 +100,7 @@ class GuessAPIView(APIView):
             raise PermissionDenied('You haven\'t made this guess, so you can\'t modify it.')
         
         if request.method == 'PUT':
-            serializer = GuessSerializer(guess, data=request.data)
+            serializer = UpdateGuessSerializer(guess, data=request.data)
             
             if serializer.is_valid():
                 serializer.save()
