@@ -13,8 +13,7 @@ class GuessSerializer(serializers.ModelSerializer):
             'sample',
             'user',
             'approved',
-            'upvotes',
-            'downvotes',
+            'votecount',
             'comments',
             'created_at',
         ]
@@ -29,8 +28,7 @@ class UpdateGuessSerializer(serializers.ModelSerializer):
             'sample',
             'user',
             'approved',
-            'upvotes',
-            'downvotes',
+            'votecount',
             'created_at',
         ]
         read_only_fields = ['id']
