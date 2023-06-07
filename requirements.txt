@@ -5,3 +5,4 @@ sqlparse>=0.4.1
 mysqlclient>=2.0
 djangorestframework>=3.14.0
 django_mysql>=4.0
+redis>=4.4.5
