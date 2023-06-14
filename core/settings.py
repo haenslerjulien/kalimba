@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'main.apps.MainConfig',
     'register.apps.RegisterConfig',
     'vote.apps.VoteConfig',
+    'leaderboard.apps.LeaderboardConfig',
 ]
 
 MIDDLEWARE = [
@@ -98,6 +99,8 @@ DATABASES = {
         },
     }
 }
+
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 
 
 # Password validation

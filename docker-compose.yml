@@ -8,7 +8,7 @@ services:
       - 8000:8000
     image: app:django
     container_name: django_container
-    command: python manage.py runserver 0.0.0.0:8000
+    command: ./startup.sh
     depends_on:
       - db 
   db:
@@ -20,3 +20,6 @@ services:
       - ./data/mysql/db:/var/lib/mysql
   redis:
     image: redis:latest
+    restart: always
+    ports:
+      - '6379:6379'
