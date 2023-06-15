@@ -23,4 +23,5 @@ urlpatterns = [
     path('', include('main.urls')),
     path('', include('register.urls')),
     path('', include('vote.urls')),
+    path('', include('leaderboard.urls')),
 ]

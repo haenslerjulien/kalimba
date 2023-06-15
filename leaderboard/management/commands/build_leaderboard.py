@@ -22,7 +22,9 @@ class Command(BaseCommand):
             
             score = vote_count_sum + (approved_guess_count * 5)
 
-            r.zadd('players:score', {user.username: score})
+            user_key = f"{user.username}:{user.id}"
+
+            r.zadd('players:score', {user_key: score})
 
         #print leaderboard
         leaderboard = r.zrevrange('players:score', 0, -1, withscores=True)
