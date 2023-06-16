@@ -8,6 +8,7 @@ from main.models import Guess
 from .models import VoteType
 from .serializers import VoteSerializer
 from core.authentication import TokenAuthentication
+from leaderboard.services.leaderboard_caching import get_redis_instance, get_user_key
 
 # # # # # # # # # # # # # # # # #
 #          V O T E S            #
@@ -27,6 +28,8 @@ class VoteAPIView(APIView):
             if guess.user.id == request.user.id and not request.user.is_superuser:
                 raise PermissionDenied('You can\'t vote on your own guess.')
             
+            r = get_redis_instance()
+
             #Has the user already voted ? 
             if Vote.objects.filter(user=request.user.id, guess=guess.id).exists():
                 vote = Vote.objects.get(user=request.user.id, guess=guess.id)
@@ -36,6 +39,9 @@ class VoteAPIView(APIView):
                     vote.delete()
                     guess.votecount -= 1
                     guess.save()
+
+                    r.zincrby('players:score', -1, get_user_key(guess.user))
+
                     return Response(status=status.HTTP_204_NO_CONTENT)
                 elif vote.type == VoteType.DOWN:
                     #Upvote the guess
@@ -46,6 +52,9 @@ class VoteAPIView(APIView):
                     # We go from downvote to up, so +2 
                     guess.votecount += 2
                     guess.save()
+
+                    r.zincrby('players:score', 2, get_user_key(guess.user))
+
                     return Response(status=status.HTTP_202_ACCEPTED)
                 
             #If the user hasn't voted yet, just create the vote and increase count
@@ -54,6 +63,9 @@ class VoteAPIView(APIView):
                 serializer.save()
                 guess.votecount += 1
                 guess.save()
+
+                r.zincrby('players:score', 1, get_user_key(guess.user))
+
                 return Response(status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors)
@@ -71,6 +83,8 @@ class VoteAPIView(APIView):
             if guess.user.id == request.user.id and not request.user.is_superuser:
                 raise PermissionDenied('You can\'t vote on your own guess.')
             
+            r = get_redis_instance()
+            
             #Has the user already voted ? 
             if Vote.objects.filter(user=request.user.id, guess=guess.id).exists():
                 vote = Vote.objects.get(user=request.user.id, guess=guess.id)
@@ -80,6 +94,9 @@ class VoteAPIView(APIView):
                     vote.delete()
                     guess.votecount += 1
                     guess.save()
+
+                    r.zincrby('players:score', 1, get_user_key(guess.user))
+
                     return Response(status=status.HTTP_204_NO_CONTENT)
                 elif vote.type == VoteType.UP:
                     #Downvote the guess
@@ -90,6 +107,9 @@ class VoteAPIView(APIView):
                     # We go from upvote to down, so -2 
                     guess.votecount -= 2
                     guess.save()
+
+                    r.zincrby('players:score', -2, get_user_key(guess.user))
+
                     return Response(status=status.HTTP_202_ACCEPTED)
                 
             #If the user hasn't voted yet, just create the vote and decrease count
@@ -98,6 +118,9 @@ class VoteAPIView(APIView):
                 serializer.save()
                 guess.votecount -= 1
                 guess.save()
+
+                r.zincrby('players:score', -1, get_user_key(guess.user))
+
                 return Response(status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors)

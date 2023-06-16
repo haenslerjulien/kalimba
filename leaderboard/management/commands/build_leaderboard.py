@@ -1,13 +1,13 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from django.db.models import Sum
-from redis import Redis
+from leaderboard.services.leaderboard_caching import get_redis_instance, get_user_key
 
 class Command(BaseCommand):
     help = 'Build the leaderboard in Redis cache'
 
     def handle(self, *args, **options):
-        r = Redis(host='redis', port=6379, db=0)
+        r = get_redis_instance()
         
         users = User.objects.all()
 
@@ -22,7 +22,7 @@ class Command(BaseCommand):
             
             score = vote_count_sum + (approved_guess_count * 5)
 
-            user_key = f"{user.username}:{user.id}"
+            user_key = get_user_key(user)
 
             r.zadd('players:score', {user_key: score})
 
