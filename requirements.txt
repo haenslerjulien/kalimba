@@ -8,3 +8,4 @@ django_mysql>=4.0
 redis>=4.4.5
 pytest
 pytest-django
+drf_spectacular

@@ -1,8 +1,6 @@
 from django.urls import path
 from .views import sample_views, guess_views, comment_views
 
-from rest_framework.urlpatterns import format_suffix_patterns
-
 urlpatterns = [
     path('samples/', sample_views.SampleAPIView.samples_list),
     path('samples/<int:id>', sample_views.SampleAPIView.sample_handler),
@@ -11,5 +9,3 @@ urlpatterns = [
     path('comments/', comment_views.CommentApiView.create_comment),
     path('comments/<int:id>', comment_views.CommentApiView.comment_handler),
 ]
-
-urlpatterns = format_suffix_patterns(urlpatterns)

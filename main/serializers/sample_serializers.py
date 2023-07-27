@@ -16,3 +16,15 @@ class SampleSerializer(serializers.ModelSerializer):
             'guesses',
         ]
         read_only_fields = ['id']
+
+class PostSampleSerializer(serializers.ModelSerializer):
+    class Meta:
+            model = Sample
+            fields = [
+                'text',
+                'file',
+                'user',
+            ]
+
+class GetSampleFileSerializer(serializers.FileField):
+     file = serializers.FileField()
