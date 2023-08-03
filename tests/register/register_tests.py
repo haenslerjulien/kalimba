@@ -11,6 +11,7 @@ def test_register_user(client):
         'password2' : 'strongPassword123'
     }
 
+
     response = client.post('/register/', payload)
 
     assert response.status_code == status.HTTP_200_OK
