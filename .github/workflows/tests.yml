@@ -16,7 +16,11 @@ jobs:
       - name: Build the docker-compose stack
         run: docker-compose up -d
       - name: show running container
-        run: docker ps 
+        run: docker ps
+      - name: Sleep for 30 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '30s'
       - name: Migrate
         run: docker exec django_container python manage.py migrate
       - name: Run API Tests
