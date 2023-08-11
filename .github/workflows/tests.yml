@@ -19,7 +19,6 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: dist
-          path: dist
   
   migrate:
     name: Run migrations
@@ -30,14 +29,12 @@ jobs:
         uses: actions/download-artifact@master
         with:
           name: dist
-          path: dist
       - name: Migrate
         run: docker exec django_container python manage.py migrate
       - name: Archive Artifact
         uses: actions/upload-artifact@master
         with:
           name: dist
-          path: dist
 
   test-api:
     name: Run API tests
@@ -48,6 +45,5 @@ jobs:
         uses: actions/download-artifact@master
         with:
           name: dist
-          path: dist
       - name: Run API Tests
         run: docker exec django_container pytest
