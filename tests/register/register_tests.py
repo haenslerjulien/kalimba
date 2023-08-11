@@ -41,6 +41,7 @@ def test_register_user_password_not_corresponding(client):
 @pytest.mark.django_db
 def test_register_user_email_already_exists(client, user):
     
+    
     payload = {
         'username' : 'coolUser2', 
         'email' : 'verycooluser@mail.com', 
